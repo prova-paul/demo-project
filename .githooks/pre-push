@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Blocks pushing to production/staging. Deployment promotion is human-owned only.
+# Pushing main (the integration branch) is allowed.
+protected_branches="production staging"
+
+while read local_ref local_sha remote_ref remote_sha; do
+  remote_branch=$(echo "$remote_ref" | sed 's|refs/heads/||')
+  for b in $protected_branches; do
+    if [[ "$remote_branch" == "$b" ]]; then
+      echo "❌ Push to '$b' is blocked from this hook. Promotion is human-owned."
+      exit 1
+    fi
+  done
+done
+
+exit 0

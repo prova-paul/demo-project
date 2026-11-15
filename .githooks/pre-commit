@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Blocks committing directly on production/staging. main is the integration branch
+# (squash commits land there); deployment promotion is human-owned.
+branch=$(git symbolic-ref --short HEAD)
+
+if [[ "$branch" == "production" || "$branch" == "staging" ]]; then
+  echo "❌ Direct commits to '$branch' are blocked. Work on a feature/* or fix/* branch off main."
+  exit 1
+fi
+
+exit 0
